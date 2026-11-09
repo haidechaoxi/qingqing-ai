@@ -6,7 +6,7 @@ st.set_page_config(page_title="清清 - 专属陪伴", page_icon="🐳", layout=
 st.title("🐳 清清 - 你的专属陪伴")
 
 # 👇 这里填你真实的 Key，等会儿我们要把它藏起来
-API_KEY =st.secrets["APK_KEY"]
+API_KEY =st.secrets["API_KEY"]
 
 # 初始化记忆和状态
 if "messages" not in st.session_state:
