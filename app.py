@@ -29,11 +29,11 @@ if prompt := st.chat_input("你想对清清说什么..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.write(prompt)
-if any(word in prompt for word in ["奶茶", "喜欢你", "漂亮", "可爱", "抱抱"]):
+    if any(word in prompt for word in ["奶茶", "喜欢你", "漂亮", "可爱", "抱抱"]):
         st.session_state.affection += 5
         st.session_state.patience += 3
         st.toast("🎉 清清好感度 +5，耐心 +3") # 网页版的弹窗提示
-elif any(word in prompt for word in ["小猪", "讨厌", "馋猫", "无聊"]):
+    elif any(word in prompt for word in ["小猪", "讨厌", "馋猫", "无聊"]):
         st.session_state.affection -= 5
         st.session_state.patience -= 2
         st.toast("💢 清清好感度 -5，耐心 -2")
