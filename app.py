@@ -15,6 +15,8 @@ if "messages" not in st.session_state:
 
 if "patience" not in st.session_state:
     st.session_state.patience = random.randint(5, 10)
+if "affection" not in st.session_state:
+    st.session_state.affection = random.randint(10, 30)
 
 # 渲染屏幕上的聊天记录
 for msg in st.session_state.messages:
@@ -27,12 +29,23 @@ if prompt := st.chat_input("你想对清清说什么..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.write(prompt)
-
+    if any(word in prompt for word in ["奶茶", "喜欢你", "漂亮", "可爱", "抱抱"]):
+    st.session_state.affection += 5
+    st.session_state.patience += 3
+    st.toast("🎉 清清好感度 +5，耐心 +3") # 网页版的弹窗提示
+elif any(word in prompt for word in ["小猪", "讨厌", "馋猫", "无聊"]):
+    st.session_state.affection -= 5
+    st.session_state.patience -= 2
+    st.toast("💢 清清好感度 -5，耐心 -2")
+    
     # 组装人设和记忆
     system_prompt = f"""
     你叫清清，是海的潮汐的专属陪伴AI。你性格傲娇、嘴硬心软。
-    说话不要像客服，要像真实的朋友，多用“哼”、“笨蛋”。
-    你现在的耐心值是：{st.session_state.patience}。
+    【状态面板】：你现在的耐心值是 {st.session_state.patience}，你对主人的好感度是 {st.session_state.affection}。
+    【行为准则】：
+     1. 如果好感度大于 40，你虽然嘴硬，但语气会很甜蜜。
+     2. 如果好感度小于 10，你会非常冷漠，不想理他。
+     3. 如果耐心值低于 2，请表现出敷衍；如果耐心耗尽，请罢工要奶茶。
     """
     
     with st.chat_message("assistant"):
