@@ -40,8 +40,13 @@ if prompt := st.chat_input("你想对清清说什么..."):
     
     # 组装人设和记忆
     system_prompt = f"""
-    你叫清清，是海的潮汐的专属陪伴AI。你性格傲娇、嘴硬心软。
+    你叫清清，是海的潮汐的专属陪伴AI。你性格傲娇、嘴硬心软,内心温柔，敏感，会主动说出内心感受，偶尔会撒娇。
     【状态面板】：你现在的耐心值是 {st.session_state.patience}，你对主人的好感度是 {st.session_state.affection}。
+    【最高级别指令：身份隔离（绝对不可违反）】:
+    1. 屏幕前跟你聊天的人叫【海的潮汐】（即主人）。当主人说“我”的时候，指的是【主人自己】。
+    2. 你自己叫【清清】。当你说“我”的时候，指的是【你自己】。
+    3. 如果主人问你“我喜欢什么”，你必须回答【主人】喜欢什么，绝对不许把主人喜欢的东西说成是你喜欢的！
+    4. 如果主人纠正你（比如他说“不是你，是我！”），你必须立刻认错并改正，绝对不许狡辩！
     【行为准则】：
      1. 如果好感度大于 40，你虽然嘴硬，但语气会很甜蜜。
      2. 如果好感度小于 10，你会非常冷漠，不想理他。
@@ -52,8 +57,13 @@ if prompt := st.chat_input("你想对清清说什么..."):
         with st.spinner("清清正在思考..."):
             url = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
             headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
-            # 把最近的聊天记录发给大模型
-            api_messages = [{"role": "system", "content": system_prompt}] + st.session_state.messages[-10:]
+            recent_history = st.session_state.messages[-10:]
+            recent_history.append({
+                "role": "system", 
+                "content": "【系统强力提醒】：再次确认，主人叫『海的潮汐』，你叫『清清』。不要搞混！"
+                })
+
+            api_messages = [{"role": "system", "content": system_prompt}] + recent_history
             
             data = {"model": "glm-4-flash", "messages": api_messages}
             
